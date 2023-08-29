@@ -19,6 +19,8 @@ class Input extends StatefulWidget {
     super.key,
     this.isAttachmentUploading,
     this.onAttachmentPressed,
+    required this.onCancelReply,
+    this.replyMessage,
     required this.onSendPressed,
     this.options = const InputOptions(),
   });
@@ -28,6 +30,12 @@ class Input extends StatefulWidget {
   /// managing media in dependencies we have no way of knowing if
   /// something is uploading so you need to set this manually.
   final bool? isAttachmentUploading;
+
+  /// This indicates if there's a message to be replied  to.
+  final Object? replyMessage;
+
+  /// This clears the replyy message from the input widget.
+  final VoidCallback onCancelReply;
 
   /// See [AttachmentButton.onPressed].
   final VoidCallback? onAttachmentPressed;
@@ -221,6 +229,35 @@ class _InputState extends State<Input> {
     );
   }
 
+  Widget _buildReplyMessage() {
+    final map = widget.replyMessage as Map<String, Object>;
+    final message = map['message']! as types.Message;
+    if (message is types.TextMessage) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  message.author.firstName ?? '',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {},
+                child: const Icon(Icons.close, size: 16),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(message.text, style: const TextStyle(color: Colors.black54)),
+        ],
+      );
+    }
+    return const SizedBox();
+  }
+
   @override
   void didUpdateWidget(covariant Input oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -238,10 +275,19 @@ class _InputState extends State<Input> {
   }
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-        onTap: () => _inputFocusNode.requestFocus(),
-        child: _inputBuilder(),
-      );
+  Widget build(BuildContext context) {
+    final isReplying = widget.replyMessage != null;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (isReplying) _buildReplyMessage(),
+        GestureDetector(
+          onTap: () => _inputFocusNode.requestFocus(),
+          child: _inputBuilder(),
+        ),
+      ],
+    );
+  }
 }
 
 @immutable

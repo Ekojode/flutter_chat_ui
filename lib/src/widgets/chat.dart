@@ -328,6 +328,8 @@ class ChatState extends State<Chat> {
   /// Used to get the correct auto scroll index from [_autoScrollIndexById].
   static const String _unreadHeaderId = 'unread_header_id';
 
+  Object? replyMessage;
+
   List<Object> _chatMessages = [];
   List<PreviewImage> _gallery = [];
   PageController? _galleryPageController;
@@ -345,6 +347,19 @@ class ChatState extends State<Chat> {
     _scrollController = widget.scrollController ?? AutoScrollController();
 
     didUpdateWidget(widget);
+  }
+
+  /// Selects message to be replied to.
+  void replyToMessage(Object message) {
+    setState(() {
+      replyMessage = message;
+    });
+  }
+
+  void cancelReply() {
+    setState(() {
+      replyMessage = null;
+    });
   }
 
   /// Scroll to the unread header.
@@ -487,7 +502,9 @@ class ChatState extends State<Chat> {
         index: index ?? -1,
         key: Key('scroll-${message.id}'),
         child: SwipeTo(
-          onRightSwipe: () {},
+          onRightSwipe: () {
+            replyToMessage(object);
+          },
           child: messageWidget,
         ),
       );
@@ -625,6 +642,7 @@ class ChatState extends State<Chat> {
                       ),
                       widget.customBottomWidget ??
                           Input(
+                            onCancelReply: cancelReply,
                             isAttachmentUploading: widget.isAttachmentUploading,
                             onAttachmentPressed: widget.onAttachmentPressed,
                             onSendPressed: widget.onSendPressed,
