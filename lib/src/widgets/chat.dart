@@ -5,6 +5,7 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:intl/intl.dart';
 import 'package:photo_view/photo_view.dart' show PhotoViewComputedScale;
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:swipe_to/swipe_to.dart';
 
 import '../chat_l10n.dart';
 import '../chat_theme.dart';
@@ -485,7 +486,10 @@ class ChatState extends State<Chat> {
         controller: _scrollController,
         index: index ?? -1,
         key: Key('scroll-${message.id}'),
-        child: messageWidget,
+        child: SwipeTo(
+          onRightSwipe: () {},
+          child: messageWidget,
+        ),
       );
     }
   }
