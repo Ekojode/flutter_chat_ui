@@ -69,6 +69,8 @@ class Chat extends StatefulWidget {
     this.listBottomWidget,
     required this.messages,
     this.nameBuilder,
+    this.onMessageSwiped,
+    this.onCancelReply,
     this.onAttachmentPressed,
     this.onAvatarTap,
     this.onBackgroundTap,
@@ -200,6 +202,9 @@ class Chat extends StatefulWidget {
   /// See [Input.isAttachmentUploading].
   final bool? isAttachmentUploading;
 
+  /// This removes the message chosen for reply.
+  final VoidCallback? onCancelReply;
+
   /// See [ChatList.isLastPage].
   final bool? isLastPage;
 
@@ -265,6 +270,9 @@ class Chat extends StatefulWidget {
   /// See [ChatList.scrollController].
   /// If provided, you cannot use the scroll to message functionality.
   final AutoScrollController? scrollController;
+
+  /// Hanldes swiped messages.
+  final Function(Object)? onMessageSwiped;
 
   /// See [ChatList.scrollPhysics].
   final ScrollPhysics? scrollPhysics;
