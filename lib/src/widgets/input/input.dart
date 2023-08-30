@@ -233,26 +233,59 @@ class _InputState extends State<Input> {
     final map = widget.replyMessage as Map<String, Object>;
     final message = map['message']! as types.Message;
     if (message is types.TextMessage) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  message.author.firstName ?? '',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  height: 24,
+                  width: 10,
+                  color: Colors.pink,
                 ),
-              ),
-              GestureDetector(
-                onTap: () {},
-                child: const Icon(Icons.close, size: 16),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(message.text, style: const TextStyle(color: Colors.black54)),
-        ],
+                const SizedBox(
+                  width: 2,
+                ),
+                Expanded(
+                  child: Text(
+                    message.author.firstName ?? '',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.pink,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    widget.onCancelReply();
+                  },
+                  icon: Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.red),
+                    ),
+                    child: const Icon(
+                      Icons.close,
+                      size: 16,
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 3),
+            Text(
+              message.text,
+              style: const TextStyle(color: Colors.black54),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
       );
     }
     return const SizedBox();
