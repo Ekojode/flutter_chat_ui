@@ -657,6 +657,7 @@ class ChatState extends State<Chat> {
                       widget.customBottomWidget ??
                           Input(
                             onCancelReply: cancelReply,
+                            replyMessage: replyMessage,
                             isAttachmentUploading: widget.isAttachmentUploading,
                             onAttachmentPressed: widget.onAttachmentPressed,
                             onSendPressed: widget.onSendPressed,
