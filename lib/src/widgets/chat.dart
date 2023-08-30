@@ -362,12 +362,18 @@ class ChatState extends State<Chat> {
     setState(() {
       replyMessage = message;
     });
+    if (widget.onMessageSwiped != null) {
+      widget.onMessageSwiped!(message);
+    }
   }
 
   void cancelReply() {
     setState(() {
       replyMessage = null;
     });
+    if (widget.onCancelReply != null) {
+      widget.onCancelReply!();
+    }
   }
 
   /// Scroll to the unread header.
