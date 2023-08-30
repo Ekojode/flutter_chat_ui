@@ -107,6 +107,7 @@ class _InputState extends State<Input> {
       if (widget.options.inputClearMode == InputClearMode.always) {
         _textController.clear();
       }
+      widget.onCancelReply();
     }
   }
 
