@@ -242,17 +242,18 @@ class _InputState extends State<Input> {
               children: [
                 Container(
                   height: 24,
-                  width: 10,
+                  width: 5,
                   color: Colors.pink,
                 ),
                 const SizedBox(
-                  width: 2,
+                  width: 10,
                 ),
                 Expanded(
                   child: Text(
                     message.author.firstName ?? '',
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
                       color: Colors.pink,
                     ),
                   ),
@@ -277,10 +278,9 @@ class _InputState extends State<Input> {
                 ),
               ],
             ),
-            const SizedBox(height: 3),
             Text(
               message.text,
-              style: const TextStyle(color: Colors.black54),
+              style: const TextStyle(color: Colors.black),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
