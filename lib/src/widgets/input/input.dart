@@ -12,7 +12,7 @@ import 'input_text_field_controller.dart';
 import 'send_button.dart';
 
 /// A class that represents bottom bar widget with a text field, attachment and
-/// send buttons inside. By default hides send button when text field is empty.
+/// send buttons inside. By default hides send button when text field is empty ().
 class Input extends StatefulWidget {
   /// Creates [Input] widget.
   const Input({
