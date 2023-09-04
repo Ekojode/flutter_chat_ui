@@ -274,6 +274,7 @@ class Message extends StatelessWidget {
               Container(
                 constraints: const BoxConstraints(maxWidth: 200, minWidth: 100),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 5),
                     (replyMessage is types.ImageMessage)
