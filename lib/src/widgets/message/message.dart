@@ -266,13 +266,13 @@ class Message extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                height: 24,
+                height: 20,
                 width: 5,
                 color: Colors.blue,
               ),
               const SizedBox(width: 5),
               Container(
-                constraints: const BoxConstraints(maxWidth: 100),
+                constraints: const BoxConstraints(maxWidth: 200, minWidth: 100),
                 child: Column(
                   children: [
                     const SizedBox(height: 5),
