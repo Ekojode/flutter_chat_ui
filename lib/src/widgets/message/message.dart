@@ -252,46 +252,49 @@ class Message extends StatelessWidget {
       if (repliedMessage is types.TextMessage) {
         final message = repliedMessage;
         content = message.text;
+      } else if (repliedMessage is types.ImageMessage) {
+        final message = repliedMessage;
+        content = message.uri;
       }
       return GestureDetector(
         onTap: () {
           onReplyTapped(repliedMessage?.id);
         },
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              height: 24,
-              width: 5,
-              color: Colors.blue,
-            ),
-            const SizedBox(width: 5),
-            Container(
-              constraints: const BoxConstraints(maxWidth: 40),
-              child: Column(
-                children: [
-                  const SizedBox(height: 5),
-                  (replyMessage is types.ImageMessage)
-                      ? SizedBox(
-                          height: 30,
-                          width: 30,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: ImageMessage(
-                              message: repliedMessage as types.ImageMessage,
-                              messageWidth: messageWidth,
-                            ),
-                          ),
-                        )
-                      : Text(
-                          content,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                ],
+        child: Padding(
+          padding: const EdgeInsets.only(top: 10.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                height: 24,
+                width: 5,
+                color: Colors.blue,
               ),
-            ),
-          ],
+              const SizedBox(width: 5),
+              Container(
+                constraints: const BoxConstraints(maxWidth: 100),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 5),
+                    (replyMessage is types.ImageMessage)
+                        ? SizedBox(
+                            height: 30,
+                            width: 30,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(content),
+                            ),
+                          )
+                        : Text(
+                            content,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }
