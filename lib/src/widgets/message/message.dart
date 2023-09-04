@@ -258,24 +258,19 @@ class Message extends StatelessWidget {
           onReplyTapped(repliedMessage?.id);
         },
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               height: 24,
               width: 5,
               color: Colors.blue,
             ),
-            SizedBox(
-              width: 100,
+            const SizedBox(width: 5),
+            Container(
+              constraints: const BoxConstraints(maxWidth: 40),
               child: Column(
                 children: [
-                  Text(
-                    repliedMessage?.author.firstName ?? '',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 5),
                   (replyMessage is types.ImageMessage)
                       ? SizedBox(
                           height: 30,
@@ -324,6 +319,7 @@ class Message extends StatelessWidget {
         return imageMessageBuilder != null
             ? imageMessageBuilder!(imageMessage, messageWidth: messageWidth)
             : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   buildReply(),
                   ImageMessage(
@@ -343,6 +339,7 @@ class Message extends StatelessWidget {
                 showName: showName,
               )
             : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   buildReply(),
                   TextMessage(
