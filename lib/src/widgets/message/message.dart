@@ -250,7 +250,7 @@ class Message extends StatelessWidget {
       final repliedMessage = message.repliedMessage;
       var content = '';
       if (repliedMessage is types.TextMessage) {
-        final message = repliedMessage.type as types.TextMessage;
+        final message = repliedMessage;
         content = message.text;
       }
       return GestureDetector(
