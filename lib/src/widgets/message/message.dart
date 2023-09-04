@@ -33,6 +33,11 @@ class Message extends StatelessWidget {
     this.imageHeaders,
     this.imageMessageBuilder,
     this.imageProviderBuilder,
+    this.replyId,
+    this.replyMessage,
+    this.replyName,
+    this.replyIsImage,
+    required this.onReplyTapped,
     required this.message,
     required this.messageWidth,
     this.nameBuilder,
@@ -118,6 +123,21 @@ class Message extends StatelessWidget {
 
   /// Maximum message width.
   final int messageWidth;
+
+  /// Id of message that was replied.
+  final String? replyId;
+
+  /// Name of user Replied.
+  final String? replyName;
+
+  /// Content of Message replied.
+  final String? replyMessage;
+
+  /// If the reply is an image.
+  final bool? replyIsImage;
+
+  /// Function to carry out on hittinf the message.
+  final Function(String?) onReplyTapped;
 
   /// See [TextMessage.nameBuilder].
   final Widget Function(types.User)? nameBuilder;
@@ -221,6 +241,67 @@ class Message extends StatelessWidget {
                   ),
                 );
 
+  Widget buildReply() {
+    if (message.type is types.TextMessage ||
+        message.type is types.ImageMessage) {}
+    if (message.repliedMessage == null) {
+      return const SizedBox();
+    } else {
+      final repliedMessage = message.repliedMessage;
+      var content = '';
+      if (repliedMessage is types.TextMessage) {
+        final message = repliedMessage.type as types.TextMessage;
+        content = message.text;
+      }
+      return GestureDetector(
+        onTap: () {
+          onReplyTapped(repliedMessage?.id);
+        },
+        child: Row(
+          children: [
+            Container(
+              height: 24,
+              width: 5,
+              color: Colors.blue,
+            ),
+            SizedBox(
+              width: 100,
+              child: Column(
+                children: [
+                  Text(
+                    repliedMessage?.author.firstName ?? '',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  (replyMessage is types.ImageMessage)
+                      ? SizedBox(
+                          height: 30,
+                          width: 30,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: ImageMessage(
+                              message: repliedMessage as types.ImageMessage,
+                              messageWidth: messageWidth,
+                            ),
+                          ),
+                        )
+                      : Text(
+                          content,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
   Widget _messageBuilder() {
     switch (message.type) {
       case types.MessageType.audio:
@@ -242,11 +323,16 @@ class Message extends StatelessWidget {
         final imageMessage = message as types.ImageMessage;
         return imageMessageBuilder != null
             ? imageMessageBuilder!(imageMessage, messageWidth: messageWidth)
-            : ImageMessage(
-                imageHeaders: imageHeaders,
-                imageProviderBuilder: imageProviderBuilder,
-                message: imageMessage,
-                messageWidth: messageWidth,
+            : Column(
+                children: [
+                  buildReply(),
+                  ImageMessage(
+                    imageHeaders: imageHeaders,
+                    imageProviderBuilder: imageProviderBuilder,
+                    message: imageMessage,
+                    messageWidth: messageWidth,
+                  ),
+                ],
               );
       case types.MessageType.text:
         final textMessage = message as types.TextMessage;
@@ -256,16 +342,22 @@ class Message extends StatelessWidget {
                 messageWidth: messageWidth,
                 showName: showName,
               )
-            : TextMessage(
-                emojiEnlargementBehavior: emojiEnlargementBehavior,
-                hideBackgroundOnEmojiMessages: hideBackgroundOnEmojiMessages,
-                message: textMessage,
-                nameBuilder: nameBuilder,
-                onPreviewDataFetched: onPreviewDataFetched,
-                options: textMessageOptions,
-                showName: showName,
-                usePreviewData: usePreviewData,
-                userAgent: userAgent,
+            : Column(
+                children: [
+                  buildReply(),
+                  TextMessage(
+                    emojiEnlargementBehavior: emojiEnlargementBehavior,
+                    hideBackgroundOnEmojiMessages:
+                        hideBackgroundOnEmojiMessages,
+                    message: textMessage,
+                    nameBuilder: nameBuilder,
+                    onPreviewDataFetched: onPreviewDataFetched,
+                    options: textMessageOptions,
+                    showName: showName,
+                    usePreviewData: usePreviewData,
+                    userAgent: userAgent,
+                  ),
+                ],
               );
       case types.MessageType.video:
         final videoMessage = message as types.VideoMessage;

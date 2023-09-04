@@ -387,6 +387,15 @@ class ChatState extends State<Chat> {
     }
   }
 
+  void scrollToTappeddMessage(String? id) {
+    if (id != null) {
+      _scrollController.scrollToIndex(
+        _autoScrollIndexById[id]!,
+        duration: scrollAnimationDuration,
+      );
+    }
+  }
+
   /// Scroll to the message with the specified [id].
   void scrollToMessage(String id, {Duration? duration}) =>
       _scrollController.scrollToIndex(
@@ -474,6 +483,7 @@ class ChatState extends State<Chat> {
           bubbleRtlAlignment: widget.bubbleRtlAlignment,
           customMessageBuilder: widget.customMessageBuilder,
           customStatusBuilder: widget.customStatusBuilder,
+          onReplyTapped: scrollToTappeddMessage,
           emojiEnlargementBehavior: widget.emojiEnlargementBehavior,
           fileMessageBuilder: widget.fileMessageBuilder,
           hideBackgroundOnEmojiMessages: widget.hideBackgroundOnEmojiMessages,

@@ -285,6 +285,56 @@ class _InputState extends State<Input> {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
+            const SizedBox(height: 4),
+          ],
+        ),
+      );
+    }
+    if (message is types.ImageMessage) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        child: Row(
+          children: [
+            Container(
+              height: 24,
+              width: 5,
+              color: Colors.pink,
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: Text(
+                message.author.firstName ?? '',
+                style: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: Colors.pink,
+                ),
+              ),
+            ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(5),
+              child: Image.network(message.uri, height: 30, width: 30),
+            ),
+            IconButton(
+              onPressed: () {
+                widget.onCancelReply();
+              },
+              icon: Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.red),
+                ),
+                child: const Icon(
+                  Icons.close,
+                  size: 16,
+                  color: Colors.red,
+                ),
+              ),
+            ),
           ],
         ),
       );
