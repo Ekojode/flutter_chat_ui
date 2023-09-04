@@ -285,11 +285,20 @@ class Message extends StatelessWidget {
                               child: Image.network(content),
                             ),
                           )
-                        : Text(
-                            content,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                        : content.endsWith('jpg') || content.endsWith('png')
+                            ? SizedBox(
+                                height: 30,
+                                width: 30,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.network(content),
+                                ),
+                              )
+                            : Text(
+                                content,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                   ],
                 ),
               ),
