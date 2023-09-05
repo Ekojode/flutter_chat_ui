@@ -267,6 +267,7 @@ class Message extends StatelessWidget {
             children: [
               Container(
                 width: 5,
+                height: 20,
                 color: Colors.blue,
               ),
               const SizedBox(width: 8),

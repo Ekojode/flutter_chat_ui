@@ -123,7 +123,7 @@ class TextMessage extends StatelessWidget {
           onReplyTapped(repliedMessage?.id);
         },
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.only(top: 8.0, right: 8.0, bottom: 8.0),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
