@@ -129,6 +129,7 @@ class TextMessage extends StatelessWidget {
             children: [
               Container(
                 width: 5,
+                height: 20,
                 color: Colors.blue,
               ),
               const SizedBox(width: 8),
@@ -137,7 +138,6 @@ class TextMessage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 5),
                     content.endsWith('jpg') || content.endsWith('png')
                         ? SizedBox(
                             height: 30,
