@@ -261,16 +261,15 @@ class Message extends StatelessWidget {
           onReplyTapped(repliedMessage?.id);
         },
         child: Padding(
-          padding: const EdgeInsets.only(top: 10.0),
+          padding: const EdgeInsets.all(10.0),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                height: 20,
                 width: 5,
                 color: Colors.blue,
               ),
-              const SizedBox(width: 5),
+              const SizedBox(width: 8),
               Container(
                 constraints: const BoxConstraints(maxWidth: 200, minWidth: 100),
                 child: Column(
@@ -331,17 +330,12 @@ class Message extends StatelessWidget {
         final imageMessage = message as types.ImageMessage;
         return imageMessageBuilder != null
             ? imageMessageBuilder!(imageMessage, messageWidth: messageWidth)
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  buildReply(),
-                  ImageMessage(
-                    imageHeaders: imageHeaders,
-                    imageProviderBuilder: imageProviderBuilder,
-                    message: imageMessage,
-                    messageWidth: messageWidth,
-                  ),
-                ],
+            : ImageMessage(
+                imageHeaders: imageHeaders,
+                imageProviderBuilder: imageProviderBuilder,
+                message: imageMessage,
+                onReplyTapped: onReplyTapped,
+                messageWidth: messageWidth,
               );
       case types.MessageType.text:
         final textMessage = message as types.TextMessage;
@@ -351,23 +345,17 @@ class Message extends StatelessWidget {
                 messageWidth: messageWidth,
                 showName: showName,
               )
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  buildReply(),
-                  TextMessage(
-                    emojiEnlargementBehavior: emojiEnlargementBehavior,
-                    hideBackgroundOnEmojiMessages:
-                        hideBackgroundOnEmojiMessages,
-                    message: textMessage,
-                    nameBuilder: nameBuilder,
-                    onPreviewDataFetched: onPreviewDataFetched,
-                    options: textMessageOptions,
-                    showName: showName,
-                    usePreviewData: usePreviewData,
-                    userAgent: userAgent,
-                  ),
-                ],
+            : TextMessage(
+                emojiEnlargementBehavior: emojiEnlargementBehavior,
+                hideBackgroundOnEmojiMessages: hideBackgroundOnEmojiMessages,
+                message: textMessage,
+                nameBuilder: nameBuilder,
+                onPreviewDataFetched: onPreviewDataFetched,
+                options: textMessageOptions,
+                showName: showName,
+                onReplyTapped: onReplyTapped,
+                usePreviewData: usePreviewData,
+                userAgent: userAgent,
               );
       case types.MessageType.video:
         final videoMessage = message as types.VideoMessage;

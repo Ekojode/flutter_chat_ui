@@ -20,6 +20,7 @@ class TextMessage extends StatelessWidget {
     required this.emojiEnlargementBehavior,
     required this.hideBackgroundOnEmojiMessages,
     required this.message,
+    required this.onReplyTapped,
     this.nameBuilder,
     this.onPreviewDataFetched,
     this.options = const TextMessageOptions(),
@@ -30,6 +31,8 @@ class TextMessage extends StatelessWidget {
 
   /// See [Message.emojiEnlargementBehavior].
   final EmojiEnlargementBehavior emojiEnlargementBehavior;
+
+  final Function(String?) onReplyTapped;
 
   /// See [Message.hideBackgroundOnEmojiMessages].
   final bool hideBackgroundOnEmojiMessages;
@@ -102,6 +105,63 @@ class TextMessage extends StatelessWidget {
     }
   }
 
+  Widget buildReply() {
+    if (message.repliedMessage == null) {
+      return const SizedBox();
+    } else {
+      final repliedMessage = message.repliedMessage;
+      var content = '';
+      if (repliedMessage is types.TextMessage) {
+        final message = repliedMessage;
+        content = message.text;
+      } else if (repliedMessage is types.ImageMessage) {
+        final message = repliedMessage;
+        content = message.uri;
+      }
+      return GestureDetector(
+        onTap: () {
+          onReplyTapped(repliedMessage?.id);
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 5,
+                color: Colors.blue,
+              ),
+              const SizedBox(width: 8),
+              Container(
+                constraints: const BoxConstraints(maxWidth: 200, minWidth: 100),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 5),
+                    content.endsWith('jpg') || content.endsWith('png')
+                        ? SizedBox(
+                            height: 30,
+                            width: 30,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(content),
+                            ),
+                          )
+                        : Text(
+                            content,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+
   Widget _textWidgetBuilder(
     types.User user,
     BuildContext context,
@@ -129,6 +189,7 @@ class TextMessage extends StatelessWidget {
       children: [
         if (showName)
           nameBuilder?.call(message.author) ?? UserName(author: message.author),
+        buildReply(),
         if (enlargeEmojis)
           if (options.isTextSelectable)
             SelectableText(message.text, style: emojiTextStyle)

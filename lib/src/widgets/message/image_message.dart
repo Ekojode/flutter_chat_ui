@@ -17,6 +17,7 @@ class ImageMessage extends StatefulWidget {
     this.imageHeaders,
     this.imageProviderBuilder,
     required this.message,
+    required this.onReplyTapped,
     required this.messageWidth,
   });
 
@@ -32,6 +33,8 @@ class ImageMessage extends StatefulWidget {
 
   /// [types.ImageMessage].
   final types.ImageMessage message;
+
+  final Function(String?) onReplyTapped;
 
   /// Maximum message width.
   final int messageWidth;
@@ -90,6 +93,63 @@ class _ImageMessageState extends State<ImageMessage> {
     }
   }
 
+  Widget buildReply() {
+    if (widget.message.repliedMessage == null) {
+      return const SizedBox();
+    } else {
+      final repliedMessage = widget.message.repliedMessage;
+      var content = '';
+      if (repliedMessage is types.TextMessage) {
+        final message = repliedMessage;
+        content = message.text;
+      } else if (repliedMessage is types.ImageMessage) {
+        final message = repliedMessage;
+        content = message.uri;
+      }
+      return GestureDetector(
+        onTap: () {
+          widget.onReplyTapped(repliedMessage?.id);
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 5,
+                color: Colors.blue,
+              ),
+              const SizedBox(width: 8),
+              Container(
+                constraints: const BoxConstraints(maxWidth: 200, minWidth: 100),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 5),
+                    content.endsWith('jpg') || content.endsWith('png')
+                        ? SizedBox(
+                            height: 30,
+                            width: 30,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(content),
+                            ),
+                          )
+                        : Text(
+                            content,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   void dispose() {
     _stream?.removeListener(ImageStreamListener(_updateImage));
@@ -111,66 +171,78 @@ class _ImageMessageState extends State<ImageMessage> {
         color: user.id == widget.message.author.id
             ? InheritedChatTheme.of(context).theme.primaryColor
             : InheritedChatTheme.of(context).theme.secondaryColor,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              height: 64,
-              margin: EdgeInsetsDirectional.fromSTEB(
-                InheritedChatTheme.of(context).theme.messageInsetsVertical,
-                InheritedChatTheme.of(context).theme.messageInsetsVertical,
-                16,
-                InheritedChatTheme.of(context).theme.messageInsetsVertical,
-              ),
-              width: 64,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: Image(
-                  fit: BoxFit.cover,
-                  image: _image!,
-                ),
-              ),
-            ),
-            Flexible(
-              child: Container(
-                margin: EdgeInsetsDirectional.fromSTEB(
-                  0,
-                  InheritedChatTheme.of(context).theme.messageInsetsVertical,
-                  InheritedChatTheme.of(context).theme.messageInsetsHorizontal,
-                  InheritedChatTheme.of(context).theme.messageInsetsVertical,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.message.name,
-                      style: user.id == widget.message.author.id
-                          ? InheritedChatTheme.of(context)
-                              .theme
-                              .sentMessageBodyTextStyle
-                          : InheritedChatTheme.of(context)
-                              .theme
-                              .receivedMessageBodyTextStyle,
-                      textWidthBasis: TextWidthBasis.longestLine,
+            buildReply(),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  height: 64,
+                  margin: EdgeInsetsDirectional.fromSTEB(
+                    InheritedChatTheme.of(context).theme.messageInsetsVertical,
+                    InheritedChatTheme.of(context).theme.messageInsetsVertical,
+                    16,
+                    InheritedChatTheme.of(context).theme.messageInsetsVertical,
+                  ),
+                  width: 64,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image(
+                      fit: BoxFit.cover,
+                      image: _image!,
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(
-                        top: 4,
-                      ),
-                      child: Text(
-                        formatBytes(widget.message.size.truncate()),
-                        style: user.id == widget.message.author.id
-                            ? InheritedChatTheme.of(context)
-                                .theme
-                                .sentMessageCaptionTextStyle
-                            : InheritedChatTheme.of(context)
-                                .theme
-                                .receivedMessageCaptionTextStyle,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+                Flexible(
+                  child: Container(
+                    margin: EdgeInsetsDirectional.fromSTEB(
+                      0,
+                      InheritedChatTheme.of(context)
+                          .theme
+                          .messageInsetsVertical,
+                      InheritedChatTheme.of(context)
+                          .theme
+                          .messageInsetsHorizontal,
+                      InheritedChatTheme.of(context)
+                          .theme
+                          .messageInsetsVertical,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.message.name,
+                          style: user.id == widget.message.author.id
+                              ? InheritedChatTheme.of(context)
+                                  .theme
+                                  .sentMessageBodyTextStyle
+                              : InheritedChatTheme.of(context)
+                                  .theme
+                                  .receivedMessageBodyTextStyle,
+                          textWidthBasis: TextWidthBasis.longestLine,
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(
+                            top: 4,
+                          ),
+                          child: Text(
+                            formatBytes(widget.message.size.truncate()),
+                            style: user.id == widget.message.author.id
+                                ? InheritedChatTheme.of(context)
+                                    .theme
+                                    .sentMessageCaptionTextStyle
+                                : InheritedChatTheme.of(context)
+                                    .theme
+                                    .receivedMessageCaptionTextStyle,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -181,12 +253,18 @@ class _ImageMessageState extends State<ImageMessage> {
           maxHeight: widget.messageWidth.toDouble(),
           minWidth: 170,
         ),
-        child: AspectRatio(
-          aspectRatio: _size.aspectRatio > 0 ? _size.aspectRatio : 1,
-          child: Image(
-            fit: BoxFit.contain,
-            image: _image!,
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            buildReply(),
+            AspectRatio(
+              aspectRatio: _size.aspectRatio > 0 ? _size.aspectRatio : 1,
+              child: Image(
+                fit: BoxFit.contain,
+                image: _image!,
+              ),
+            ),
+          ],
         ),
       );
     }
