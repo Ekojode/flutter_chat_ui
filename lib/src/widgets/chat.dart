@@ -672,9 +672,7 @@ class ChatState extends State<Chat> {
                             onCancelReply: cancelReply,
                             replyMessage: replyMessage,
                             isAttachmentUploading: widget.isAttachmentUploading,
-                            onAttachmentPressed: () {
-                              widget.onAttachmentPressed;
-                            },
+                            onAttachmentPressed: widget.onAttachmentPressed,
                             onSendPressed: widget.onSendPressed,
                             options: widget.inputOptions,
                           ),
