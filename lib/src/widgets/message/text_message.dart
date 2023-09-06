@@ -150,6 +150,9 @@ class TextMessage extends StatelessWidget {
                         : Text(
                             content,
                             maxLines: 1,
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ),
                             overflow: TextOverflow.ellipsis,
                           ),
                   ],

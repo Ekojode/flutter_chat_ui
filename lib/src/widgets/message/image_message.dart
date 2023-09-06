@@ -138,6 +138,9 @@ class _ImageMessageState extends State<ImageMessage> {
                         : Text(
                             content,
                             maxLines: 1,
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ),
                             overflow: TextOverflow.ellipsis,
                           ),
                   ],

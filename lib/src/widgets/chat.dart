@@ -48,6 +48,7 @@ class Chat extends StatefulWidget {
     this.dateHeaderThreshold = 900000,
     this.dateIsUtc = false,
     this.dateLocale,
+    this.cancelReply,
     this.disableImageGallery,
     this.emojiEnlargementBehavior = EmojiEnlargementBehavior.multi,
     this.emptyState,
@@ -167,6 +168,8 @@ class Chat extends StatefulWidget {
   /// See [Message.fileMessageBuilder].
   final Widget Function(types.FileMessage, {required int messageWidth})?
       fileMessageBuilder;
+
+  final Function(bool)? cancelReply;
 
   /// Time (in ms) between two messages when we will visually group them.
   /// Default value is 1 minute, 60000 ms. When time between two messages
@@ -669,7 +672,9 @@ class ChatState extends State<Chat> {
                             onCancelReply: cancelReply,
                             replyMessage: replyMessage,
                             isAttachmentUploading: widget.isAttachmentUploading,
-                            onAttachmentPressed: widget.onAttachmentPressed,
+                            onAttachmentPressed: () {
+                              widget.onAttachmentPressed;
+                            },
                             onSendPressed: widget.onSendPressed,
                             options: widget.inputOptions,
                           ),
