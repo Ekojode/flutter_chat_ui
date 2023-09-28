@@ -175,24 +175,13 @@ class _InputState extends State<Input> {
                     if (widget.onAttachmentPressed != null)
                       AttachmentButton(
                         isLoading: widget.isAttachmentUploading ?? false,
-                        onPressed: widget.onAttachmentPressed,
+                        onPressed: () {
+                          if (widget.onAttachmentPressed != null) {
+                            widget.onAttachmentPressed!();
+                          }
+                        },
                         padding: buttonPadding,
                       ),
-                    IconButton(
-                      constraints: const BoxConstraints(
-                        minHeight: 24,
-                        minWidth: 24,
-                      ),
-                      icon: const Icon(
-                        Icons.emoji_emotions,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          emojiShowing = !emojiShowing;
-                        });
-                      },
-                    ),
                     Expanded(
                       child: Padding(
                         padding: textPadding,
