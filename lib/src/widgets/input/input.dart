@@ -164,6 +164,7 @@ class _InputState extends State<Input> {
                     onPressed: widget.onAttachmentPressed,
                     padding: buttonPadding,
                   ),
+                TextEmojiPicker(controller: _textController),
                 Expanded(
                   child: Padding(
                     padding: textPadding,
