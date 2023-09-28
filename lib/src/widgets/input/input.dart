@@ -1,3 +1,5 @@
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
@@ -53,6 +55,8 @@ class Input extends StatefulWidget {
 
 /// [Input] widget state.
 class _InputState extends State<Input> {
+  bool emojiShowing = false;
+
   late final _inputFocusNode = FocusNode(
     onKeyEvent: (node, event) {
       if (event.physicalKey == PhysicalKeyboardKey.enter &&
@@ -82,6 +86,14 @@ class _InputState extends State<Input> {
     _textController =
         widget.options.textEditingController ?? InputTextFieldController();
     _handleSendButtonVisibilityModeChange();
+  }
+
+  void _onBackspacePressed() {
+    _textController
+      ..text = _textController.text.characters.toString()
+      ..selection = TextSelection.fromPosition(
+        TextPosition(offset: _textController.text.length),
+      );
   }
 
   void _handleSendButtonVisibilityModeChange() {
@@ -155,71 +167,135 @@ class _InputState extends State<Input> {
             decoration:
                 InheritedChatTheme.of(context).theme.inputContainerDecoration,
             padding: safeAreaInsets,
-            child: Row(
-              textDirection: TextDirection.ltr,
+            child: Column(
               children: [
-                if (widget.onAttachmentPressed != null)
-                  AttachmentButton(
-                    isLoading: widget.isAttachmentUploading ?? false,
-                    onPressed: widget.onAttachmentPressed,
-                    padding: buttonPadding,
-                  ),
-                TextEmojiPicker(controller: _textController),
-                Expanded(
-                  child: Padding(
-                    padding: textPadding,
-                    child: TextField(
-                      enabled: widget.options.enabled,
-                      autocorrect: widget.options.autocorrect,
-                      autofocus: widget.options.autofocus,
-                      enableSuggestions: widget.options.enableSuggestions,
-                      controller: _textController,
-                      cursorColor: InheritedChatTheme.of(context)
-                          .theme
-                          .inputTextCursorColor,
-                      decoration: InheritedChatTheme.of(context)
-                          .theme
-                          .inputTextDecoration
-                          .copyWith(
-                            hintStyle: InheritedChatTheme.of(context)
-                                .theme
-                                .inputTextStyle
-                                .copyWith(
-                                  color: InheritedChatTheme.of(context)
-                                      .theme
-                                      .inputTextColor
-                                      .withOpacity(0.5),
-                                ),
-                            hintText:
-                                InheritedL10n.of(context).l10n.inputPlaceholder,
-                          ),
-                      focusNode: _inputFocusNode,
-                      keyboardType: widget.options.keyboardType,
-                      maxLines: 5,
-                      minLines: 1,
-                      onChanged: widget.options.onTextChanged,
-                      onTap: widget.options.onTextFieldTap,
-                      style: InheritedChatTheme.of(context)
-                          .theme
-                          .inputTextStyle
-                          .copyWith(
-                            color: InheritedChatTheme.of(context)
-                                .theme
-                                .inputTextColor,
-                          ),
-                      textCapitalization: TextCapitalization.sentences,
+                Row(
+                  textDirection: TextDirection.ltr,
+                  children: [
+                    if (widget.onAttachmentPressed != null)
+                      AttachmentButton(
+                        isLoading: widget.isAttachmentUploading ?? false,
+                        onPressed: widget.onAttachmentPressed,
+                        padding: buttonPadding,
+                      ),
+                    IconButton(
+                      constraints: const BoxConstraints(
+                        minHeight: 24,
+                        minWidth: 24,
+                      ),
+                      icon: const Icon(
+                        Icons.emoji_emotions,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          emojiShowing = !emojiShowing;
+                        });
+                      },
                     ),
-                  ),
+                    Expanded(
+                      child: Padding(
+                        padding: textPadding,
+                        child: TextField(
+                          enabled: widget.options.enabled,
+                          autocorrect: widget.options.autocorrect,
+                          autofocus: widget.options.autofocus,
+                          enableSuggestions: widget.options.enableSuggestions,
+                          controller: _textController,
+                          cursorColor: InheritedChatTheme.of(context)
+                              .theme
+                              .inputTextCursorColor,
+                          decoration: InheritedChatTheme.of(context)
+                              .theme
+                              .inputTextDecoration
+                              .copyWith(
+                                hintStyle: InheritedChatTheme.of(context)
+                                    .theme
+                                    .inputTextStyle
+                                    .copyWith(
+                                      color: InheritedChatTheme.of(context)
+                                          .theme
+                                          .inputTextColor
+                                          .withOpacity(0.5),
+                                    ),
+                                hintText: InheritedL10n.of(context)
+                                    .l10n
+                                    .inputPlaceholder,
+                              ),
+                          focusNode: _inputFocusNode,
+                          keyboardType: widget.options.keyboardType,
+                          maxLines: 5,
+                          minLines: 1,
+                          onChanged: widget.options.onTextChanged,
+                          onTap: widget.options.onTextFieldTap,
+                          style: InheritedChatTheme.of(context)
+                              .theme
+                              .inputTextStyle
+                              .copyWith(
+                                color: InheritedChatTheme.of(context)
+                                    .theme
+                                    .inputTextColor,
+                              ),
+                          textCapitalization: TextCapitalization.sentences,
+                        ),
+                      ),
+                    ),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight:
+                            buttonPadding.bottom + buttonPadding.top + 24,
+                      ),
+                      child: Visibility(
+                        visible: _sendButtonVisible,
+                        child: SendButton(
+                          onPressed: _handleSendPressed,
+                          padding: buttonPadding,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: buttonPadding.bottom + buttonPadding.top + 24,
-                  ),
-                  child: Visibility(
-                    visible: _sendButtonVisible,
-                    child: SendButton(
-                      onPressed: _handleSendPressed,
-                      padding: buttonPadding,
+                Offstage(
+                  offstage: !emojiShowing,
+                  child: SizedBox(
+                    height: 250,
+                    child: EmojiPicker(
+                      textEditingController: _textController,
+                      onBackspacePressed: _onBackspacePressed,
+                      config: Config(
+                        columns: 7,
+                        // Issue: https://github.com/flutter/flutter/issues/28894.
+                        emojiSizeMax: 32 *
+                            (foundation.defaultTargetPlatform ==
+                                    TargetPlatform.iOS
+                                ? 1.30
+                                : 1.0),
+                        verticalSpacing: 0,
+                        horizontalSpacing: 0,
+                        gridPadding: EdgeInsets.zero,
+                        initCategory: Category.RECENT,
+                        bgColor: const Color(0xFFF2F2F2),
+                        indicatorColor: Colors.blue,
+                        iconColor: Colors.grey,
+                        iconColorSelected: Colors.blue,
+                        backspaceColor: Colors.blue,
+                        skinToneDialogBgColor: Colors.white,
+                        skinToneIndicatorColor: Colors.grey,
+                        enableSkinTones: true,
+                        recentTabBehavior: RecentTabBehavior.RECENT,
+                        recentsLimit: 28,
+                        replaceEmojiOnLimitExceed: false,
+                        noRecents: const Text(
+                          'No Recents',
+                          style: TextStyle(fontSize: 20, color: Colors.black26),
+                          textAlign: TextAlign.center,
+                        ),
+                        loadingIndicator: const SizedBox.shrink(),
+                        tabIndicatorAnimDuration: kTabScrollDuration,
+                        categoryIcons: const CategoryIcons(),
+                        buttonMode: ButtonMode.MATERIAL,
+                        checkPlatformCompatibility: true,
+                      ),
                     ),
                   ),
                 ),
