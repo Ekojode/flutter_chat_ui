@@ -529,7 +529,7 @@ class ChatState extends State<Chat> {
         index: index ?? -1,
         key: Key('scroll-${message.id}'),
         child: SwipeTo(
-          onRightSwipe: () {
+          onRightSwipe: (drag) {
             replyToMessage(object);
           },
           child: messageWidget,
